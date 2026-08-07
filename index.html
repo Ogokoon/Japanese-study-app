@@ -718,7 +718,7 @@ function makeSwiper(opts){
   var index = 0;
   var track = null;
   var viewportWidth = 0;
-  var dragStartX = null, dragStartY = null, dragDX = 0, dragging = false, dragLocked = null;
+  var dragStartX = null, dragStartY = null, dragDX = 0, dragging = false, dragLocked = null, dragStartTime = 0;
   // own display order; never mutate the shared source array (sentences reference verbs by index)
   var order = opts.items.slice();
 
@@ -781,6 +781,7 @@ function makeSwiper(opts){
     if (!track) return;
     dragStartX = e.touches[0].clientX;
     dragStartY = e.touches[0].clientY;
+    dragStartTime = Date.now();
     dragLocked = null;
     dragging = true;
     track.style.transition = 'none';
@@ -804,9 +805,12 @@ function makeSwiper(opts){
     if (!dragging) return;
     dragging = false;
     if (dragLocked === 'h') {
-      var threshold = viewportWidth * 0.18;
-      if (dragDX <= -threshold) animateTo(1);
-      else if (dragDX >= threshold) animateTo(-1);
+      var elapsed = Math.max(Date.now() - dragStartTime, 1);
+      var velocity = dragDX / elapsed; // px per ms
+      var distanceThreshold = viewportWidth * 0.12;
+      var isFlick = Math.abs(dragDX) >= 16 && Math.abs(velocity) >= 0.35;
+      if (dragDX <= -distanceThreshold || (isFlick && dragDX < 0)) animateTo(1);
+      else if (dragDX >= distanceThreshold || (isFlick && dragDX > 0)) animateTo(-1);
       else snapBack();
     }
     dragDX = 0;
