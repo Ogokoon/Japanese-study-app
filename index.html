@@ -1013,29 +1013,28 @@ var OPENING_AUDIO_SRC = 'data:audio/mpeg;base64,SUQzAwAAAAAvMkdFT0IAABeoAAAAYXBw
   }
   splashEl.addEventListener('click', handleSplashTap);
 
-  // Resume continuity: if the app was actively used recently (e.g. user just minimized
-  // and reopened, causing the mobile OS to fully reload the page), skip the splash
-  // and restore the last-used tab instead of restarting from scratch.
-  var RESUME_WINDOW_MS = 6 * 60 * 60 * 1000; // 6 hours
+  // Resume continuity: sessionStorage persists only while this browser/app "session"
+  // (tab or task) stays alive — including when the mobile OS suspends and later
+  // reloads the page while the app is merely minimized in the background. It is
+  // cleared when the session truly ends (app fully closed/swiped away, or tab closed),
+  // so it's a reliable signal to distinguish "just minimized" from "actually quit".
   function shouldResume(){
     try {
-      var last = localStorage.getItem('jp_app_last_active');
-      if (!last) return false;
-      return (Date.now() - parseInt(last, 10)) < RESUME_WINDOW_MS;
+      return sessionStorage.getItem('jp_app_session_active') === '1';
     } catch (e) { return false; }
   }
   if (shouldResume()) {
     splashStage = 2;
     splashEl.style.display = 'none';
     try {
-      var savedTab = localStorage.getItem('jp_app_last_tab');
+      var savedTab = sessionStorage.getItem('jp_app_last_tab');
       if (savedTab) window.__resumeTab = savedTab;
     } catch (e) {}
   }
 })();
 
 function markAppActive(){
-  try { localStorage.setItem('jp_app_last_active', String(Date.now())); } catch (e) {}
+  try { sessionStorage.setItem('jp_app_session_active', '1'); } catch (e) {}
 }
 markAppActive();
 
@@ -1960,7 +1959,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
     window.scrollTo(0, 0);
-    try { localStorage.setItem('jp_app_last_tab', n); } catch (e) {}
+    try { sessionStorage.setItem('jp_app_last_tab', n); } catch (e) {}
   });
 });
 if (window.__resumeTab) {
