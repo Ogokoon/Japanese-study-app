@@ -381,11 +381,11 @@
     </div>
     <div class="settings-section">
       <label class="settings-label" for="vol-main">메인 배경음악 볼륨 (1·3·5번 탭)</label>
-      <input type="range" id="vol-main" class="settings-slider" min="0" max="100" value="50">
+      <input type="range" id="vol-main" class="settings-slider" min="0" max="200" value="100">
     </div>
     <div class="settings-section">
       <label class="settings-label" for="vol-quiz">퀴즈 배경음악 볼륨 (2·4·6번 탭)</label>
-      <input type="range" id="vol-quiz" class="settings-slider" min="0" max="100" value="50">
+      <input type="range" id="vol-quiz" class="settings-slider" min="0" max="200" value="100">
     </div>
     <div class="settings-section">
       <label class="settings-label" for="quiz-count-input">퀴즈 문제 수 (10~50개)</label>
@@ -1012,13 +1012,38 @@ var OPENING_AUDIO_SRC = 'data:audio/mpeg;base64,SUQzAwAAAAAvMkdFT0IAABeoAAAAYXBw
     }
   }
   splashEl.addEventListener('click', handleSplashTap);
+
+  // Resume continuity: if the app was actively used recently (e.g. user just minimized
+  // and reopened, causing the mobile OS to fully reload the page), skip the splash
+  // and restore the last-used tab instead of restarting from scratch.
+  var RESUME_WINDOW_MS = 6 * 60 * 60 * 1000; // 6 hours
+  function shouldResume(){
+    try {
+      var last = localStorage.getItem('jp_app_last_active');
+      if (!last) return false;
+      return (Date.now() - parseInt(last, 10)) < RESUME_WINDOW_MS;
+    } catch (e) { return false; }
+  }
+  if (shouldResume()) {
+    splashStage = 2;
+    splashEl.style.display = 'none';
+    try {
+      var savedTab = localStorage.getItem('jp_app_last_tab');
+      if (savedTab) window.__resumeTab = savedTab;
+    } catch (e) {}
+  }
 })();
+
+function markAppActive(){
+  try { localStorage.setItem('jp_app_last_active', String(Date.now())); } catch (e) {}
+}
+markAppActive();
 
 function makeSwiper(opts){
   var index = 0;
   var track = null;
   var viewportWidth = 0;
-  var dragStartX = null, dragStartY = null, dragDX = 0, dragging = false, dragLocked = null, dragStartTime = 0;
+  var dragStartX = null, dragStartY = null, dragDX = 0, dragging = false, dragLocked = null, dragStartTime = 0, dragStartTarget = null;
   // own display order; never mutate the shared source array (sentences reference verbs by index)
   var order = opts.items.slice();
 
@@ -1082,6 +1107,7 @@ function makeSwiper(opts){
     dragStartX = e.touches[0].clientX;
     dragStartY = e.touches[0].clientY;
     dragStartTime = Date.now();
+    dragStartTarget = e.target;
     dragLocked = null;
     dragging = true;
     track.style.transition = 'none';
@@ -1112,6 +1138,15 @@ function makeSwiper(opts){
       if (dragDX <= -distanceThreshold || (isFlick && dragDX < 0)) animateTo(1);
       else if (dragDX >= distanceThreshold || (isFlick && dragDX > 0)) animateTo(-1);
       else snapBack();
+    } else if (dragLocked === null) {
+      var isInteractive = dragStartTarget && dragStartTarget.closest &&
+        dragStartTarget.closest('button, .zoomable-kanji, .cat-anchor, a, input, .speaker-btn-sm');
+      if (!isInteractive) {
+        var rect = opts.viewportEl.getBoundingClientRect();
+        var tapX = dragStartX - rect.left;
+        if (tapX < rect.width / 2) animateTo(-1);
+        else animateTo(1);
+      }
     }
     dragDX = 0;
     dragLocked = null;
@@ -1226,15 +1261,15 @@ idbGet('jp_app_counts_v1', function(v){
 
 var sessionWrong = { word: {}, sentence: {}, adj: {} };
 
-var appSettings = storage.get('jp_app_settings_v2') || { volMain: 50, volQuiz: 50, volOpening: 50, quizCount: 10 };
-var settingsVolMain = (appSettings.volMain != null ? appSettings.volMain : 100) / 100;
-var settingsVolQuiz = (appSettings.volQuiz != null ? appSettings.volQuiz : 100) / 100;
+var appSettings = storage.get('jp_app_settings_v3') || { volMain: 100, volQuiz: 100, volOpening: 50, quizCount: 10 };
+var settingsVolMain = (appSettings.volMain != null ? appSettings.volMain : 100) / 200;
+var settingsVolQuiz = (appSettings.volQuiz != null ? appSettings.volQuiz : 100) / 200;
 var settingsVolOpening = (appSettings.volOpening != null ? appSettings.volOpening : 50) / 100;
 var quizQuestionCount = appSettings.quizCount || 10;
 function saveAppSettings(){
-  storage.set('jp_app_settings_v2', {
-    volMain: Math.round(settingsVolMain * 100),
-    volQuiz: Math.round(settingsVolQuiz * 100),
+  storage.set('jp_app_settings_v3', {
+    volMain: Math.round(settingsVolMain * 200),
+    volQuiz: Math.round(settingsVolQuiz * 200),
     volOpening: Math.round(settingsVolOpening * 100),
     quizCount: quizQuestionCount
   });
@@ -1305,6 +1340,7 @@ document.addEventListener('touchstart', earlyAudioUnlock, { passive: true });
 document.addEventListener('mousedown', earlyAudioUnlock);
 document.addEventListener('pointerdown', earlyAudioUnlock);
 document.addEventListener('visibilitychange', function(){
+  markAppActive();
   var oa = document.getElementById('opening-audio');
   var splashEl = document.getElementById('splash-screen');
   var splashVisible = splashEl && splashEl.style.display !== 'none';
@@ -1331,12 +1367,14 @@ document.addEventListener('visibilitychange', function(){
   }
 });
 window.addEventListener('pagehide', function(){
+  markAppActive();
   var oa = document.getElementById('opening-audio');
   if (oa) oa.pause();
   stopBgMusic();
   stopRetroMusic();
 });
 window.addEventListener('blur', function(){
+  markAppActive();
   var oa = document.getElementById('opening-audio');
   if (oa) oa.pause();
   stopBgMusic();
@@ -1853,16 +1891,16 @@ document.getElementById('se-search-btn').addEventListener('click', function(){ o
   var volQuizEl = document.getElementById('vol-quiz');
   var volOpeningEl = document.getElementById('vol-opening');
   var quizCountEl = document.getElementById('quiz-count-input');
-  volMainEl.value = Math.round(settingsVolMain * 100);
-  volQuizEl.value = Math.round(settingsVolQuiz * 100);
+  volMainEl.value = Math.round(settingsVolMain * 200);
+  volQuizEl.value = Math.round(settingsVolQuiz * 200);
   volOpeningEl.value = Math.round(settingsVolOpening * 100);
   quizCountEl.value = quizQuestionCount;
   volMainEl.addEventListener('input', function(){
-    settingsVolMain = Number(volMainEl.value) / 100;
+    settingsVolMain = Number(volMainEl.value) / 200;
     saveAppSettings();
   });
   volQuizEl.addEventListener('input', function(){
-    settingsVolQuiz = Number(volQuizEl.value) / 100;
+    settingsVolQuiz = Number(volQuizEl.value) / 200;
     saveAppSettings();
   });
   volOpeningEl.addEventListener('input', function(){
@@ -1922,8 +1960,17 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
     window.scrollTo(0, 0);
+    try { localStorage.setItem('jp_app_last_tab', n); } catch (e) {}
   });
 });
+if (window.__resumeTab) {
+  if (window.__resumeTab !== '1') {
+    var resumeBtn = document.querySelector('.tab-btn[data-tab="' + window.__resumeTab + '"]');
+    if (resumeBtn) resumeBtn.click();
+  } else {
+    startBgMusic();
+  }
+}
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('service-worker.js').catch(function(){});
