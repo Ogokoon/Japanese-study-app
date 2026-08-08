@@ -139,7 +139,7 @@
   .swipe-viewport{overflow:hidden; position:relative; width:100%; min-height:560px;}
   .swipe-track{display:flex; will-change:transform;}
   .swipe-slide{flex:0 0 100%; width:100%; box-sizing:border-box;}
-  .swipe-nav{display:flex; align-items:center; justify-content:space-between; margin-top:4px; gap:10px;}
+  .swipe-nav{display:flex; align-items:center; justify-content:center; margin-top:4px; gap:10px;}
   .swipe-nav button{flex:0 0 auto; padding:9px 20px; font-size:18px; min-height:auto;}
   .swipe-nav button:disabled{opacity:0.3; pointer-events:none;}
   .swipe-counter{font-size:16px; color:var(--text-secondary); font-weight:700;}
@@ -243,17 +243,15 @@
     <div class="mascot-banner"><div class="banner-glow"></div><svg class="banner-paw" style="top:8px;left:16px;transform:rotate(-18deg);" width="22" height="22" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><svg class="banner-paw" style="bottom:10px;right:20px;transform:rotate(16deg);" width="28" height="28" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><svg class="banner-paw" style="top:14px;right:46px;transform:rotate(34deg);" width="14" height="14" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><span class="banner-star" style="position:absolute;top:20px;right:70px;font-size:16px;">✦</span><span class="banner-star" style="position:absolute;bottom:18px;left:34px;font-size:12px;">✦</span><div class="mascot-row" id="mascot-header"></div></div>
     <div class="swipe-viewport" id="verb-viewport"></div>
     <div class="swipe-nav">
-      <button id="v-prev" class="no-click-sound">◀</button>
       <span class="swipe-counter" id="v-counter">1 / 50</span>
-      <button id="v-next" class="no-click-sound">▶</button>
     </div>
-    <p class="swipe-hint">카드를 좌우로 드래그해서 넘길 수 있어요</p>
+    <p class="swipe-hint">카드를 좌우로 드래그하거나(PC는 방향키) 넘길 수 있어요</p>
   </div>
 
 <div id="tab-content-2" style="display:none">
     <div id="w-start-view">
       <div class="mascot-row" id="w-mascot-start"></div>
-      <p class="center" style="color:var(--text-secondary); font-size:15px;">기본형·ます형·て형을 섞어 10문제를 풀어요</p>
+      <p class="center" id="w-start-desc" style="color:var(--text-secondary); font-size:15px;">기본형·ます형·て형을 섞어 10문제를 풀어요</p>
       <button id="w-start-btn" class="full-btn">퀴즈 시작하기</button>
     </div>
     <div id="w-quiz-view" style="display:none">
@@ -277,7 +275,7 @@
     </div>
     <div id="w-complete-view" class="center" style="display:none; padding:1.5rem 0;">
       <div class="mascot-row" id="w-mascot-complete"></div>
-      <p style="font-size:20px; font-weight:700; margin:0 0 8px;">10문제를 모두 완료했습니다</p>
+      <p id="w-complete-heading" style="font-size:20px; font-weight:700; margin:0 0 8px;">10문제를 모두 완료했습니다</p>
       <p class="score-line" id="w-score"></p>
       <button id="w-restart" class="full-btn">다시 풀기</button>
     </div>
@@ -288,17 +286,15 @@
     <div class="mascot-banner"><div class="banner-glow"></div><svg class="banner-paw" style="top:8px;left:16px;transform:rotate(-18deg);" width="22" height="22" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><svg class="banner-paw" style="bottom:10px;right:20px;transform:rotate(16deg);" width="28" height="28" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><svg class="banner-paw" style="top:14px;right:46px;transform:rotate(34deg);" width="14" height="14" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><span class="banner-star" style="position:absolute;top:20px;right:70px;font-size:16px;">✦</span><span class="banner-star" style="position:absolute;bottom:18px;left:34px;font-size:12px;">✦</span><div class="mascot-row" id="mascot-header-5"></div></div>
     <div class="swipe-viewport" id="adj-viewport"></div>
     <div class="swipe-nav">
-      <button id="adj-prev" class="no-click-sound">◀</button>
       <span class="swipe-counter" id="adj-counter">1 / 50</span>
-      <button id="adj-next" class="no-click-sound">▶</button>
     </div>
-    <p class="swipe-hint">카드를 좌우로 드래그해서 넘길 수 있어요</p>
+    <p class="swipe-hint">카드를 좌우로 드래그하거나(PC는 방향키) 넘길 수 있어요</p>
   </div>
 
 <div id="tab-content-4" style="display:none">
     <div id="aq-start-view">
       <div class="mascot-row" id="aq-mascot-start"></div>
-      <p class="center" style="color:var(--text-secondary); font-size:15px;">기본형·です형·연결형·부정형을 섞어 10문제를 풀어요</p>
+      <p class="center" id="aq-start-desc" style="color:var(--text-secondary); font-size:15px;">기본형·です형·연결형·부정형을 섞어 10문제를 풀어요</p>
       <button id="aq-start-btn" class="full-btn">퀴즈 시작하기</button>
     </div>
     <div id="aq-quiz-view" style="display:none">
@@ -322,7 +318,7 @@
     </div>
     <div id="aq-complete-view" class="center" style="display:none; padding:1.5rem 0;">
       <div class="mascot-row" id="aq-mascot-complete"></div>
-      <p style="font-size:20px; font-weight:700; margin:0 0 8px;">10문제를 모두 완료했습니다</p>
+      <p id="aq-complete-heading" style="font-size:20px; font-weight:700; margin:0 0 8px;">10문제를 모두 완료했습니다</p>
       <p class="score-line" id="aq-score"></p>
       <button id="aq-restart" class="full-btn">다시 풀기</button>
     </div>
@@ -333,17 +329,15 @@
     <div class="mascot-banner"><div class="banner-glow"></div><svg class="banner-paw" style="top:8px;left:16px;transform:rotate(-18deg);" width="22" height="22" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><svg class="banner-paw" style="bottom:10px;right:20px;transform:rotate(16deg);" width="28" height="28" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><svg class="banner-paw" style="top:14px;right:46px;transform:rotate(34deg);" width="14" height="14" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="#fff"/><circle cx="5" cy="7" r="2.6" fill="#fff"/><circle cx="10" cy="4" r="2.6" fill="#fff"/><circle cx="15" cy="4" r="2.6" fill="#fff"/><circle cx="19" cy="7" r="2.6" fill="#fff"/></svg><span class="banner-star" style="position:absolute;top:20px;right:70px;font-size:16px;">✦</span><span class="banner-star" style="position:absolute;bottom:18px;left:34px;font-size:12px;">✦</span><div class="mascot-row" id="mascot-header-3"></div></div>
     <div class="swipe-viewport" id="sentence-viewport"></div>
     <div class="swipe-nav">
-      <button id="se-prev" class="no-click-sound">◀</button>
       <span class="swipe-counter" id="se-counter">1 / 17</span>
-      <button id="se-next" class="no-click-sound">▶</button>
     </div>
-    <p class="swipe-hint">카드를 좌우로 드래그해서 넘길 수 있어요</p>
+    <p class="swipe-hint">카드를 좌우로 드래그하거나(PC는 방향키) 넘길 수 있어요</p>
   </div>
 
 <div id="tab-content-6" style="display:none">
     <div id="s-start-view">
       <div class="mascot-row" id="s-mascot-start"></div>
-      <p class="center" style="color:var(--text-secondary); font-size:15px;">배운 예문의 빈칸에 들어갈 동사를 맞혀보세요</p>
+      <p class="center" id="s-start-desc" style="color:var(--text-secondary); font-size:15px;">한글 뜻만 보고 전체 문장을 일본어로 써보세요. 10문제를 풀어요</p>
       <button id="s-start-btn" class="full-btn">퀴즈 시작하기</button>
     </div>
     <div id="s-quiz-view" style="display:none">
@@ -366,7 +360,7 @@
     </div>
     <div id="s-complete-view" class="center" style="display:none; padding:1.5rem 0;">
       <div class="mascot-row" id="s-mascot-complete"></div>
-      <p style="font-size:20px; font-weight:700; margin:0 0 8px;">10문제를 모두 완료했습니다</p>
+      <p id="s-complete-heading" style="font-size:20px; font-weight:700; margin:0 0 8px;">10문제를 모두 완료했습니다</p>
       <p class="score-line" id="s-score"></p>
       <button id="s-restart" class="full-btn">다시 풀기</button>
     </div>
@@ -1030,8 +1024,8 @@ function makeSwiper(opts){
 
   function updateNav(){
     opts.counterEl.textContent = (index + 1) + ' / ' + order.length;
-    opts.prevBtn.disabled = index === 0;
-    opts.nextBtn.disabled = index === order.length - 1;
+    if (opts.prevBtn) opts.prevBtn.disabled = index === 0;
+    if (opts.nextBtn) opts.nextBtn.disabled = index === order.length - 1;
   }
 
   function renderTrack(){
@@ -1064,17 +1058,17 @@ function makeSwiper(opts){
     if (dir === 1 && index >= order.length - 1) { snapBack(); return; }
     if (dir === -1 && index <= 0) { snapBack(); return; }
     reactSurprised();
+    playClickSound();
     track.style.transition = 'transform 0.28s ease';
     track.style.transform = 'translateX(' + (dir === 1 ? -(viewportWidth * 2) : 0) + 'px)';
     setTimeout(function(){
       index += dir;
       renderTrack();
-      playClickSound();
     }, 280);
   }
 
-  opts.prevBtn.addEventListener('click', function(){ animateTo(-1); });
-  opts.nextBtn.addEventListener('click', function(){ animateTo(1); });
+  if (opts.prevBtn) opts.prevBtn.addEventListener('click', function(){ animateTo(-1); });
+  if (opts.nextBtn) opts.nextBtn.addEventListener('click', function(){ animateTo(1); });
 
   opts.viewportEl.addEventListener('touchstart', function(e){
     if (!track) return;
@@ -1238,6 +1232,23 @@ function saveAppSettings(){
     quizCount: quizQuestionCount
   });
 }
+
+function updateQuizCountTexts(){
+  var n = quizQuestionCount;
+  var wDesc = document.getElementById('w-start-desc');
+  if (wDesc) wDesc.textContent = '기본형·ます형·て형을 섞어 ' + n + '문제를 풀어요';
+  var aqDesc = document.getElementById('aq-start-desc');
+  if (aqDesc) aqDesc.textContent = '기본형·です형·연결형·부정형을 섞어 ' + n + '문제를 풀어요';
+  var sDesc = document.getElementById('s-start-desc');
+  if (sDesc) sDesc.textContent = '한글 뜻만 보고 전체 문장을 일본어로 써보세요. ' + n + '문제를 풀어요';
+  var wHead = document.getElementById('w-complete-heading');
+  if (wHead) wHead.textContent = n + '문제를 모두 완료했습니다';
+  var aqHead = document.getElementById('aq-complete-heading');
+  if (aqHead) aqHead.textContent = n + '문제를 모두 완료했습니다';
+  var sHead = document.getElementById('s-complete-heading');
+  if (sHead) sHead.textContent = n + '문제를 모두 완료했습니다';
+}
+updateQuizCountTexts();
 
 function primeVoices(){
   if ('speechSynthesis' in window) { window.speechSynthesis.getVoices(); }
@@ -1860,6 +1871,7 @@ document.getElementById('se-search-btn').addEventListener('click', function(){ o
     quizCountEl.value = n;
     quizQuestionCount = n;
     saveAppSettings();
+    updateQuizCountTexts();
   });
 })();
 
